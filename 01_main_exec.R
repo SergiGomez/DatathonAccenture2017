@@ -11,6 +11,17 @@ addGeoVars <- TRUE
 useDummyVars <- TRUE
 addPublicPlaceVar <- TRUE
 addFamilyReviewVar <- TRUE
+doTraining <- TRUE
+doInference <- FALSE
+modelChoice <- "GBM_greedy" # RF, RF_greedy, GBM, GBM_greedy
+# grid search parameters of Random Forest and Gradient Boosting
+paramsModel <- list(ntrees_rf =  c(1000,2000),
+                    mtries_rf =  c(5,10,20),
+                    max_depth_rf = c(20, 10),
+                    ntrees_gbm = c(500,1000),
+                    max_depth_gbm = c(5,20),
+                    learn_rate_gbm = c(0.03, 0.1, 0.3),
+                    nfolds = 5)
 
 # ----- Data Import ------------------------------------------------------------
 cat("Reading the train and test data \n")
@@ -50,8 +61,12 @@ dtModeling <- preModelingChecks(train = trainPro,
 trainModeling <- dtModeling$train
 testModeling <- dtModeling$test
 
-# Saving Training and test set so they can be picked by someone else in the team
+# Saving Training and test set so these can be picked by someone else in the team
 saveRDS(trainModeling, '/data/trainModeling.RData')
 saveRDS(testModeling, '/data/testModeling.RData')
 
 # The training is done in the script 03_modelTraining
+doTrainAndInference(doTraining = doTraining, 
+                    doInference = doInference, 
+                    paramsModel = paramsModel, 
+                    modelChoice = modelChoice)
